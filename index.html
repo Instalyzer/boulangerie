@@ -1,0 +1,1086 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réservation Viennoiseries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f5f0e8;
+    --text2: rgba(245,240,232,0.55);
+    --text3: rgba(245,240,232,0.3);
+    --accent: #c8a96e;
+    --accent2: #e8c98a;
+    --accent-bg: rgba(200,169,110,0.12);
+    --red: #e05555;
+    --green: #4caf82;
+    --green-bg: rgba(76,175,130,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    line-height: 1;
+    margin-top: 1px;
+  }
+
+  .admin-toggle {
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: none;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .admin-toggle:hover {
+    border-color: var(--border2);
+    color: var(--text);
+  }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── CLIENT VIEW ── */
+  .hero {
+    padding: 48px 24px 32px;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-bg);
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--accent2);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ── FORM CONTAINER ── */
+  .form-wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .card:focus-within {
+    border-color: var(--border2);
+  }
+
+  .field {
+    margin-bottom: 14px;
+  }
+
+  .field:last-child { margin-bottom: 0; }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    transition: border-color 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  .field input::placeholder { color: var(--text3); }
+  .field input:focus,
+  .field select:focus { border-color: var(--accent); }
+  .field select { cursor: pointer; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* ── PRODUCTS ── */
+  .product-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .product-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+
+  .product-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .product-row:first-child { padding-top: 0; }
+
+  .product-info { flex: 1; }
+
+  .product-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .product-price {
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+  }
+
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    color: var(--text2);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .qty-btn:hover { background: var(--border); color: var(--text); }
+
+  .qty-val {
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 22px;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .qty-val.active { color: var(--accent); }
+
+  /* ── TOTAL ── */
+  .total-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--accent-bg);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 12px;
+    margin-top: 12px;
+  }
+
+  .total-label {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  .total-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  .total-note {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── SUBMIT BTN ── */
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+    margin-top: 16px;
+  }
+
+  .btn-submit:hover {
+    background: var(--accent2);
+    transform: translateY(-1px);
+  }
+
+  .btn-submit:active { transform: scale(0.99); }
+
+  /* ── SUCCESS ── */
+  .success-view {
+    max-width: 560px;
+    margin: 60px auto;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .success-icon-wrap {
+    width: 72px;
+    height: 72px;
+    background: var(--green-bg);
+    border: 1px solid rgba(76,175,130,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 28px;
+  }
+
+  .success-view h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .success-view p {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 8px;
+    font-weight: 300;
+  }
+
+  .recap-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    text-align: left;
+  }
+
+  .recap-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .recap-row:last-child { border-bottom: none; }
+
+  .recap-row span:first-child { color: var(--text2); font-weight: 300; }
+  .recap-row span:last-child { color: var(--text); font-weight: 500; }
+
+  .btn-again {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid var(--border2);
+    border-radius: 999px;
+    color: var(--text2);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    background: none;
+    transition: all 0.2s;
+  }
+
+  .btn-again:hover { color: var(--text); border-color: var(--accent); }
+
+  /* ── ADMIN VIEW ── */
+  .admin-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  .admin-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .admin-sub {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ftab {
+    padding: 7px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text2);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .ftab:hover { border-color: var(--border2); color: var(--text); }
+  .ftab.active { background: var(--accent); border-color: var(--accent); color: #0a0a0a; font-weight: 600; }
+
+  .order-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .order-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+
+  .order-card:hover { border-color: var(--border2); }
+
+  .order-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .order-client { font-size: 15px; font-weight: 600; color: var(--text); }
+  .order-meta { font-size: 12px; color: var(--text2); margin-top: 3px; font-weight: 300; }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .badge-pending { background: rgba(200,169,110,0.15); color: var(--accent2); border: 1px solid rgba(200,169,110,0.25); }
+  .badge-done { background: var(--green-bg); color: var(--green); border: 1px solid rgba(76,175,130,0.25); }
+
+  .order-items-list {
+    font-size: 13px;
+    color: var(--text2);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .oi-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .order-total-line {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 8px;
+    margin-top: 4px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .order-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-done {
+    padding: 7px 18px;
+    background: var(--green-bg);
+    border: 1px solid rgba(76,175,130,0.25);
+    color: var(--green);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-done:hover { background: rgba(76,175,130,0.2); }
+
+  .btn-delete {
+    padding: 7px 14px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    border-radius: 999px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-delete:hover { border-color: var(--red); color: var(--red); }
+
+  .empty-orders {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text3);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .empty-orders span { display: block; font-size: 32px; margin-bottom: 12px; }
+
+  /* ── ADMIN PASSWORD ── */
+  .admin-lock {
+    max-width: 380px;
+    margin: 80px auto;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .admin-lock h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .admin-lock p { font-size: 14px; color: var(--text2); margin-bottom: 24px; font-weight: 300; }
+
+  .lock-input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-size: 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    text-align: center;
+    letter-spacing: 0.2em;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .lock-input:focus { border-color: var(--accent); }
+  .lock-error { font-size: 13px; color: var(--red); margin-top: 8px; min-height: 18px; }
+
+  /* ── DATE BADGE ── */
+  .date-badge {
+    font-size: 11px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: var(--text2);
+    margin-left: 8px;
+    font-weight: 400;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .field-row { grid-template-columns: 1fr; }
+    .hero { padding: 32px 20px 20px; }
+    .stat-num { font-size: 22px; }
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 4px; }
+
+  /* ── Select arrow ── */
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* ── Animation ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .view.active { animation: fadeUp 0.3s ease; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🥐</div>
+    <div>
+      <span class="logo-text">Epi & Co</span>
+      <span class="logo-sub">Réservation en ligne</span>
+    </div>
+  </div>
+  <button class="admin-toggle" id="adminBtn" onclick="toggleAdmin()">Espace gérant</button>
+</header>
+
+<!-- ══ VUE CLIENT ══ -->
+<div id="view-client" class="view active">
+  <div id="form-section">
+    <div class="hero">
+      <div class="hero-badge">🌿 Fraîches chaque matin</div>
+      <h1>Vos viennoiseries<br><em>réservées à l'avance</em></h1>
+      <p>Commandez en quelques secondes, récupérez à la boutique à l'heure que vous souhaitez. Paiement sur place.</p>
+    </div>
+
+    <div class="form-wrap">
+      <div class="section-label">Vos informations</div>
+      <div class="card">
+        <div class="field-row">
+          <div class="field">
+            <label>Prénom</label>
+            <input type="text" id="prenom" placeholder="Marie" autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label>Nom</label>
+            <input type="text" id="nom" placeholder="Dupont" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="field">
+          <label>N° de logement / adresse</label>
+          <input type="text" id="logement" placeholder="ex : Bât B – Appt 12" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="section-label">Retrait</div>
+      <div class="card">
+        <div class="field-row">
+          <div class="field">
+            <label>Date de retrait</label>
+            <input type="date" id="date-retrait">
+          </div>
+          <div class="field">
+            <label>Heure de retrait</label>
+            <select id="heure-retrait">
+              <option value="">-- Choisir --</option>
+              <option>07h00</option><option>07h30</option>
+              <option>08h00</option><option>08h30</option>
+              <option>09h00</option><option>09h30</option>
+              <option>10h00</option><option>10h30</option>
+              <option>11h00</option><option>11h30</option>
+              <option>12h00</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Vos articles</div>
+      <div class="card">
+        <div class="product-list" id="product-list"></div>
+      </div>
+
+      <div class="total-bar">
+        <span class="total-label">Total estimé</span>
+        <span class="total-amount" id="total">0,00 €</span>
+      </div>
+      <p class="total-note">Paiement uniquement en boutique</p>
+
+      <button class="btn-submit" onclick="submitOrder()">Confirmer ma réservation →</button>
+    </div>
+  </div>
+
+  <!-- Succès -->
+  <div id="success-section" class="success-view" style="display:none">
+    <div class="success-icon-wrap">✓</div>
+    <h2>Réservation confirmée !</h2>
+    <p id="success-text"></p>
+    <div class="recap-box" id="recap-box"></div>
+    <button class="btn-again" onclick="resetForm()">Passer une nouvelle commande</button>
+  </div>
+</div>
+
+<!-- ══ VUE ADMIN LOCK ══ -->
+<div id="view-admin-lock" class="view">
+  <div class="admin-lock">
+    <h2>Espace gérant</h2>
+    <p>Entrez le code d'accès pour consulter les commandes.</p>
+    <input type="password" class="lock-input" id="admin-pw" placeholder="••••" maxlength="10" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="btn-submit" onclick="checkPw()">Accéder</button>
+    <div class="lock-error" id="pw-error"></div>
+  </div>
+</div>
+
+<!-- ══ VUE ADMIN ══ -->
+<div id="view-admin" class="view">
+  <div class="admin-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+      <div>
+        <div class="admin-title">Commandes</div>
+        <div class="admin-sub">Gérez les réservations en temps réel</div>
+      </div>
+      <button class="admin-toggle" onclick="logout()" style="font-size:12px">Déconnexion</button>
+    </div>
+
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <div class="filter-tabs">
+      <button class="ftab active" onclick="setFilter('all',this)">Toutes</button>
+      <button class="ftab" onclick="setFilter('pending',this)">En attente</button>
+      <button class="ftab" onclick="setFilter('done',this)">Récupérées</button>
+    </div>
+
+    <div class="order-list" id="order-list"></div>
+  </div>
+</div>
+
+<script>
+  const ADMIN_CODE = '1234'; // ← Change ce code !
+  const FORMSPREE_ID = 'mdabnrnq';
+
+  const PRODUCTS = [
+    { id: 'baguette', name: 'Baguette tradition', price: 1.50, emoji: '🥖' },
+    { id: 'pac', name: 'Pain au chocolat', price: 1.60, emoji: '🍫' },
+    { id: 'croissant', name: 'Croissant', price: 1.50, emoji: '🥐' },
+    { id: 'painraisin', name: 'Pain aux raisins', price: 1.80, emoji: '🍇' },
+    { id: 'chausson', name: 'Chausson aux pommes', price: 2.10, emoji: '🍎' },
+    { id: 'cookie', name: 'Cookie', price: 2.50, emoji: '🍪' },
+  ];
+
+  let qty = {};
+  PRODUCTS.forEach(p => qty[p.id] = 0);
+
+  let orders = JSON.parse(localStorage.getItem('bl_orders') || '[]');
+  let adminFilter = 'all';
+  let adminUnlocked = false;
+
+  function save() { localStorage.setItem('bl_orders', JSON.stringify(orders)); }
+
+  // Build products
+  function buildProducts() {
+    document.getElementById('product-list').innerHTML = PRODUCTS.map(p => `
+      <div class="product-row" id="pr-${p.id}">
+        <div class="product-info">
+          <div class="product-name">${p.emoji} ${p.name}</div>
+          <div class="product-price">${p.price.toFixed(2).replace('.', ',')} €</div>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
+          <span class="qty-val" id="qv-${p.id}">0</span>
+          <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function changeQty(id, d) {
+    qty[id] = Math.max(0, qty[id] + d);
+    const el = document.getElementById('qv-' + id);
+    el.textContent = qty[id];
+    el.className = 'qty-val' + (qty[id] > 0 ? ' active' : '');
+    updateTotal();
+  }
+
+  function updateTotal() {
+    const t = PRODUCTS.reduce((s, p) => s + qty[p.id] * p.price, 0);
+    document.getElementById('total').textContent = t.toFixed(2).replace('.', ',') + ' €';
+  }
+
+  function submitOrder() {
+    const prenom = document.getElementById('prenom').value.trim();
+    const nom = document.getElementById('nom').value.trim();
+    const logement = document.getElementById('logement').value.trim();
+    const date = document.getElementById('date-retrait').value;
+    const heure = document.getElementById('heure-retrait').value;
+    const items = PRODUCTS.filter(p => qty[p.id] > 0).map(p => ({ ...p, q: qty[p.id] }));
+
+    if (!prenom || !nom || !logement || !date || !heure) {
+      alert('Merci de remplir tous les champs 😊'); return;
+    }
+    if (items.length === 0) {
+      alert('Choisissez au moins un article !'); return;
+    }
+
+    const total = items.reduce((s, i) => s + i.price * i.q, 0);
+    const dateF = new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    const order = {
+      id: Date.now(),
+      prenom, nom, logement, date, heure, items, total,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+
+    orders.unshift(order);
+    save();
+
+    // Envoi email via Formspree
+    const itemsText = items.map(i => `${i.q}x ${i.name} = ${(i.q*i.price).toFixed(2)}€`).join(' | ');
+    fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: '🥐 Nouvelle commande – ' + prenom + ' ' + nom,
+        Nom: prenom + ' ' + nom,
+        Logement: logement,
+        Retrait: dateF + ' à ' + heure,
+        Commande: itemsText,
+        Total: total.toFixed(2).replace('.', ',') + ' €'
+      })
+    }).catch(function(){});
+
+    // Success
+    document.getElementById('success-text').textContent =
+      `Bonjour ${prenom}, votre commande est bien enregistrée. Rendez-vous le ${dateF} à ${heure}.`;
+
+    document.getElementById('recap-box').innerHTML = [
+      ['Nom', `${prenom} ${nom}`],
+      ['Logement', logement],
+      ['Date', `${dateF} à ${heure}`],
+      ...items.map(i => [i.emoji + ' ' + i.name, `${i.q} × ${i.price.toFixed(2).replace('.', ',')} €`]),
+      ['Total à régler', `${total.toFixed(2).replace('.', ',')} €`]
+    ].map(([k, v]) => `<div class="recap-row"><span>${k}</span><span>${v}</span></div>`).join('');
+
+    document.getElementById('form-section').style.display = 'none';
+    document.getElementById('success-section').style.display = 'block';
+  }
+
+  function resetForm() {
+    PRODUCTS.forEach(p => { qty[p.id] = 0; });
+    buildProducts();
+    updateTotal();
+    ['prenom', 'nom', 'logement', 'heure-retrait'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('date-retrait').value = new Date().toISOString().split('T')[0];
+    document.getElementById('form-section').style.display = 'block';
+    document.getElementById('success-section').style.display = 'none';
+  }
+
+  // Admin
+  function toggleAdmin() {
+    if (adminUnlocked) {
+      showView('admin');
+      renderAdmin();
+    } else {
+      showView('admin-lock');
+      setTimeout(() => document.getElementById('admin-pw').focus(), 100);
+    }
+  }
+
+  function checkPw() {
+    const pw = document.getElementById('admin-pw').value;
+    if (pw === ADMIN_CODE) {
+      adminUnlocked = true;
+      document.getElementById('admin-pw').value = '';
+      document.getElementById('pw-error').textContent = '';
+      showView('admin');
+      renderAdmin();
+    } else {
+      document.getElementById('pw-error').textContent = 'Code incorrect.';
+      document.getElementById('admin-pw').value = '';
+      document.getElementById('admin-pw').focus();
+    }
+  }
+
+  function logout() {
+    adminUnlocked = false;
+    showView('client');
+  }
+
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function setFilter(f, btn) {
+    adminFilter = f;
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderOrders();
+  }
+
+  function renderAdmin() {
+    const pending = orders.filter(o => o.status === 'pending');
+    const done = orders.filter(o => o.status === 'done');
+    const ca = done.reduce((s, o) => s + o.total, 0);
+
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-num">${pending.length}</div>
+        <div class="stat-label">En attente</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">${orders.length}</div>
+        <div class="stat-label">Total commandes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">${ca.toFixed(2).replace('.', ',')} €</div>
+        <div class="stat-label">CA encaissé</div>
+      </div>
+    `;
+
+    renderOrders();
+  }
+
+  function renderOrders() {
+    const list = document.getElementById('order-list');
+    const filtered = adminFilter === 'all' ? orders : orders.filter(o => o.status === adminFilter);
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty-orders"><span>🥐</span>Aucune commande pour le moment.</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map(o => {
+      const dateF = new Date(o.date + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      return `
+        <div class="order-card">
+          <div class="order-top">
+            <div>
+              <div class="order-client">${o.prenom} ${o.nom}</div>
+              <div class="order-meta">Logement ${o.logement} · ${dateF} à ${o.heure}</div>
+            </div>
+            <span class="badge ${o.status === 'pending' ? 'badge-pending' : 'badge-done'}">
+              ${o.status === 'pending' ? 'En attente' : 'Récupérée'}
+            </span>
+          </div>
+          <div class="order-items-list">
+            ${o.items.map(i => `
+              <div class="oi-row">
+                <span>${i.q}× ${i.emoji} ${i.name}</span>
+                <span>${(i.q * i.price).toFixed(2).replace('.', ',')} €</span>
+              </div>
+            `).join('')}
+            <div class="order-total-line">
+              <span>Total à encaisser</span>
+              <span>${o.total.toFixed(2).replace('.', ',')} €</span>
+            </div>
+          </div>
+          ${o.status === 'pending' ? `
+          <div class="order-actions">
+            <button class="btn-done" onclick="markDone(${o.id})">✓ Marquer récupérée</button>
+            <button class="btn-delete" onclick="deleteOrder(${o.id})">Supprimer</button>
+          </div>` : `
+          <div class="order-actions">
+            <button class="btn-delete" onclick="deleteOrder(${o.id})">Supprimer</button>
+          </div>`}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function markDone(id) {
+    const o = orders.find(o => o.id === id);
+    if (o) { o.status = 'done'; save(); renderAdmin(); }
+  }
+
+  function deleteOrder(id) {
+    if (confirm('Supprimer cette commande ?')) {
+      orders = orders.filter(o => o.id !== id);
+      save();
+      renderAdmin();
+    }
+  }
+
+  // Init
+  buildProducts();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('date-retrait').value = today;
+  document.getElementById('date-retrait').min = today;
+</script>
+</body>
+</html>
